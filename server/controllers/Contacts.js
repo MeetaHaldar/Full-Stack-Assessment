@@ -1,12 +1,16 @@
-const Contact = require("../models/ContactList");
+const Contact = require("../models/contact");
+
+/** @type {import("express").RequestHandler} */
 const addContact = async (req, res) => {
-  const { name, email, phoneNum, userId } = req.body;
+  const userId = req.user._id;
+
+  const { name, email, phone } = req.body;
 
   let data = new Contact({
-    name: name,
-    email: email,
-    phoneNum: phoneNum,
-    userId: userId,
+    name,
+    email,
+    phone,
+    userId,
   });
 
   try {
@@ -16,21 +20,33 @@ const addContact = async (req, res) => {
     res.json({ message: err.message });
   }
 };
+
+/** @type {import("express").RequestHandler} */
 const deleteContact = async (req, res) => {
-  const { contactId } = req.body;
-  let result = await Contact.findOneAndDelete({ _id: contactId });
+  const userId = req.user._id;
+  const contactId = req.params.id;
+  const result = await Contact.findOneAndDelete({ _id: contactId, userId });
   res.send(result);
 };
+
+/** @type {import("express").RequestHandler} */
 const updateContact = async (req, res) => {
-  let result = await Contact.updateOne(
-    { _id: req.params.id },
-    { $set: req.body }
+  const contactId = req.params.id;
+  const userId = req.user._id;
+  const result = await Contact.findOneAndUpdate(
+    { _id: contactId, userId },
+    req.body,
+    {
+      new: true,
+    }
   );
   res.send(result);
 };
+
+/** @type {import("express").RequestHandler} */
 const getAll = async (req, res) => {
-  const id = req.body.userId;
-  let result = await Contact.find({ userId: id });
+  const userId = req.user._id;
+  const result = await Contact.find({ userId });
   res.send(result);
 };
 

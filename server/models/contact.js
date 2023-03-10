@@ -7,18 +7,17 @@ const contactSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    unique: true,
   },
-  phoneNum: {
+  phone: {
     type: Number,
     required: true,
   },
   userId: {
-    type: String,
+    type: mongoose.Types.ObjectId,
     required: true,
     index: true,
-    ref: "User",
+    ref: "users",
   },
 });
 
-module.exports = mongoose.model("Contacts", contactSchema);
+module.exports = mongoose.model("contacts", contactSchema);

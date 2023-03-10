@@ -1,13 +1,17 @@
 const express = require("express");
-const router = express.Router();
 const verifyToken = require("../middleware/verifyToken");
 const contactFun = require("../controllers/Contacts");
-router.post("/add", verifyToken, contactFun.addContact);
 
-router.delete("/delete", verifyToken, contactFun.deleteContact);
+const router = express.Router();
 
-router.put("/update/:id", verifyToken, contactFun.updateContact);
+router.use(verifyToken);
 
-router.get("/getAll", verifyToken, contactFun.getAll);
+router.post("/", contactFun.addContact);
+
+router.delete("/:id", contactFun.deleteContact);
+
+router.put("/:id", contactFun.updateContact);
+
+router.get("/", contactFun.getAll);
 
 module.exports = router;
